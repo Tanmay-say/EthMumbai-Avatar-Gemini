@@ -1,6 +1,6 @@
 const MarqueeItem = () => (
   <div className="flex items-center gap-4 px-4">
-    <img src="/images/logo.png" alt="ETHMumbai" className="h-6 w-6" />
+    <img src="/images/logo1.png" alt="ETHMumbai" className="h-6 w-6" />
     <span className="font-display font-semibold tracking-wide">ETHMUMBAI 2026</span>
     <span className="text-primary-foreground/80">•</span>
     <span className="font-display tracking-wide">BUILD FOR THE WORLD</span>

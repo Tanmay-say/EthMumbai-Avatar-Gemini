@@ -1,116 +1,73 @@
-# ETHMumbai Avatar Creator
+# Welcome to your Lovable project
 
-## Project Overview
+## Project info
 
-ETHMumbai Avatar Creator is a web application that generates personalized Mumbai-themed avatars using Google Gemini AI. Users can upload their photo and name to create a unique avatar featuring Mumbai landmarks and cultural elements.
+**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
 
-## Getting Started
+## How can I edit this code?
 
-### Prerequisites
+There are several ways of editing your application.
 
-- Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-- Supabase account and project
-- Google Gemini API access
+**Use Lovable**
 
-### Installation
+Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
 
-Follow these steps to set up the project locally:
+Changes made via Lovable will be committed automatically to this repo.
+
+**Use your preferred IDE**
+
+If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+
+The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+
+Follow these steps:
 
 ```sh
-# Step 1: Clone the repository
+# Step 1: Clone the repository using the project's Git URL.
 git clone <YOUR_GIT_URL>
 
-# Step 2: Navigate to the project directory
-cd gemini-avatar-creator
+# Step 2: Navigate to the project directory.
+cd <YOUR_PROJECT_NAME>
 
-# Step 3: Install the necessary dependencies
-npm install
+# Step 3: Install the necessary dependencies.
+npm i
 
-# Step 4: Set up environment variables
-# Create a .env file with:
-# VITE_SUPABASE_URL=your_supabase_url
-# VITE_SUPABASE_PUBLISHABLE_KEY=your_supabase_key
-
-# Step 5: Start the development server
+# Step 4: Start the development server with auto-reloading and an instant preview.
 npm run dev
 ```
 
-### Environment Variables
+**Edit a file directly in GitHub**
 
-Create a `.env` file in the root directory with the following variables:
+- Navigate to the desired file(s).
+- Click the "Edit" button (pencil icon) at the top right of the file view.
+- Make your changes and commit the changes.
 
-```env
-VITE_SUPABASE_URL=your_supabase_url
-VITE_SUPABASE_PUBLISHABLE_KEY=your_supabase_publishable_key
-```
+**Use GitHub Codespaces**
 
-For the Supabase Edge Function, set these environment variables in your Supabase dashboard:
-
-```env
-GEMINI_API_KEY=your_gemini_api_key
-AI_API_URL=your_ai_gateway_url  # e.g., https://your-ai-gateway.com/v1/chat/completions
-SUPABASE_URL=your_supabase_url
-SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
-```
-
-**Note:** The Edge Function uses an AI Gateway endpoint. You'll need to configure your own AI API endpoint or use a compatible service that supports the Gemini image generation model.
+- Navigate to the main page of your repository.
+- Click on the "Code" button (green button) near the top right.
+- Select the "Codespaces" tab.
+- Click on "New codespace" to launch a new Codespace environment.
+- Edit files directly within the Codespace and commit and push your changes once you're done.
 
 ## What technologies are used for this project?
 
 This project is built with:
 
-- **Vite** - Build tool and dev server
-- **TypeScript** - Type-safe JavaScript
-- **React** - UI library
-- **shadcn-ui** - Component library
-- **Tailwind CSS** - Styling
-- **Supabase** - Backend (Database, Storage, Edge Functions)
-- **Google Gemini AI** - Avatar generation
-
-## Project Structure
-
-```
-├── src/
-│   ├── components/     # React components
-│   ├── pages/         # Route pages
-│   ├── integrations/  # Supabase client
-│   └── lib/           # Utilities
-├── supabase/
-│   ├── functions/     # Edge Functions
-│   └── migrations/    # Database migrations
-└── public/            # Static assets
-```
-
-## Available Scripts
-
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm run preview` - Preview production build
-- `npm run lint` - Run ESLint
+- Vite
+- TypeScript
+- React
+- shadcn-ui
+- Tailwind CSS
 
 ## How can I deploy this project?
 
-### Deploy to Vercel/Netlify
+Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
 
-1. Build the project: `npm run build`
-2. Deploy the `dist` folder to your hosting provider
-3. Set environment variables in your hosting platform
+## Can I connect a custom domain to my Lovable project?
 
-### Deploy Supabase Edge Functions
+Yes, you can!
 
-```sh
-supabase functions deploy generate-avatar
-```
+To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
 
-## Features
-
-- 🎨 Generate personalized Mumbai-themed avatars
-- 📸 Upload and process user photos
-- 🖼️ Gallery of all generated avatars
-- 📥 Download avatars
-- 🔗 Share avatars on social media
-- 🎯 Responsive design
-
-## License
-
-MIT
+Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)

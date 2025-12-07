@@ -14,6 +14,7 @@ export const TicketMachine = ({ onGenerated }: TicketMachineProps) => {
   const [photo, setPhoto] = useState<File | null>(null);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedType, setSelectedType] = useState<"avatar" | "passport">("avatar");
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
@@ -102,7 +103,7 @@ export const TicketMachine = ({ onGenerated }: TicketMachineProps) => {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <span className="text-muted-foreground font-medium text-sm">
-          TICKET MACHINE #01
+          AVATAR MACHINE
         </span>
         <div className="flex items-center gap-1.5 bg-secondary px-3 py-1 rounded-full">
           <span className="text-xs">🎟️</span>
@@ -110,11 +111,29 @@ export const TicketMachine = ({ onGenerated }: TicketMachineProps) => {
         </div>
       </div>
 
-      {/* Solo Tab */}
-      <div className="flex mb-6">
-        <button className="flex-1 flex items-center justify-center gap-2 py-3 bg-secondary rounded-lg font-medium text-secondary-foreground">
+      {/* Type Selection Tabs */}
+      <div className="flex gap-3 mb-6">
+        <button 
+          onClick={() => setSelectedType("avatar")}
+          className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-lg font-bold text-sm transition-all ${
+            selectedType === "avatar" 
+              ? "bg-secondary text-secondary-foreground shadow-md" 
+              : "bg-muted text-muted-foreground hover:bg-muted/80"
+          }`}
+        >
           <User className="w-4 h-4" />
-          SOLO
+          ETH-AVATAR
+        </button>
+        <button 
+          onClick={() => setSelectedType("passport")}
+          className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-lg font-bold text-sm transition-all ${
+            selectedType === "passport" 
+              ? "bg-secondary text-secondary-foreground shadow-md" 
+              : "bg-muted text-muted-foreground hover:bg-muted/80"
+          }`}
+        >
+          <User className="w-4 h-4" />
+          ETH-PASSPORT
         </button>
       </div>
 

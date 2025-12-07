@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Marquee } from "@/components/Marquee";
-import { FloatingClouds } from "@/components/FloatingClouds";
 import { Skyline } from "@/components/Skyline";
 import { TicketMachine } from "@/components/TicketMachine";
 import { GeneratedAvatar } from "@/components/GeneratedAvatar";
@@ -25,20 +24,24 @@ const Index = () => {
       {/* Marquee Banner */}
       <Marquee />
 
-      {/* Floating Clouds */}
-      <FloatingClouds />
-
       {/* City Skyline */}
       <Skyline />
 
       {/* Main Content */}
       <div className="relative z-20 pt-20 pb-32 px-4 min-h-screen flex flex-col items-center justify-center">
         {/* Logo */}
-        <div className="absolute top-16 left-4 md:left-8 flex items-center gap-2 mt-4">
-          <img src="/images/logo.png" alt="ETHMumbai" className="h-10 md:h-12" />
-          <span className="text-primary-foreground font-display font-bold text-lg md:text-xl tracking-tight">
-            ETHMUMBAI
-          </span>
+        <div className="absolute top-16 left-4 md:left-8 mt-4">
+          <img src="/images/logo.png" alt="ETHMumbai" className="h-16 md:h-20 w-auto object-contain" />
+        </div>
+
+        {/* Connect Wallet Button - Top Right */}
+        <div className="absolute top-16 right-4 md:right-8 mt-4">
+          <button className="bg-secondary hover:bg-secondary/90 text-secondary-foreground font-bold px-6 py-3 rounded-2xl shadow-lg transition-all hover:scale-105 flex items-center gap-2">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+            </svg>
+            Connect Wallet
+          </button>
         </div>
 
         {/* Decorative Circles */}
@@ -53,30 +56,14 @@ const Index = () => {
         <div className="w-full max-w-6xl flex flex-col lg:flex-row items-center justify-between gap-8 lg:gap-16">
           {/* Left Content */}
           <div className="text-center lg:text-left animate-fade-in">
-            <div className="inline-flex items-center gap-2 bg-primary-foreground/10 backdrop-blur-sm px-4 py-2 rounded-full mb-6">
-              <span className="text-sm">🎟️</span>
-              <span className="text-primary-foreground font-medium text-sm">
-                OFFICIAL TICKET BOOTH
-              </span>
-            </div>
-
-            <h1 className="font-display text-5xl md:text-6xl lg:text-7xl font-bold text-primary-foreground leading-tight mb-4">
+            <h1 className="font-display text-5xl md:text-6xl lg:text-7xl font-black text-primary-foreground leading-tight mb-6 tracking-tight uppercase">
               GET YOUR<br />
-              <span className="text-secondary">AVATAR</span>
+              <span className="text-secondary font-black">AVATAR</span>
             </h1>
 
-            <p className="text-primary-foreground/90 text-lg md:text-xl max-w-md mx-auto lg:mx-0 mb-8">
+            <p className="text-primary-foreground/95 text-lg md:text-xl max-w-md mx-auto lg:mx-0 mb-8 font-medium">
               Board the bus to Web3! Upload your photo to mint your personalized ETHMumbai Avatar.
             </p>
-
-            {/* Bus Image */}
-            <div className="relative w-64 md:w-80 mx-auto lg:mx-0">
-              <img
-                src="/images/bus.png"
-                alt="Mumbai Double Decker Bus"
-                className="w-full h-auto animate-float"
-              />
-            </div>
           </div>
 
           {/* Right Content - Ticket Machine or Generated Avatar */}
@@ -93,8 +80,8 @@ const Index = () => {
           </div>
         </div>
 
-        {/* Gallery Preview */}
-        <div className="mt-12 w-full max-w-6xl flex justify-end">
+        {/* Gallery Preview - Bottom Left */}
+        <div className="absolute bottom-8 left-4 md:left-8 z-30">
           <GalleryPreview />
         </div>
       </div>
