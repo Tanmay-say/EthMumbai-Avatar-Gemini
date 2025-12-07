@@ -9,14 +9,19 @@ const corsHeaders = {
 const AVATAR_GENERATION_PROMPT = `You are given:
 1. A user photo.
 2. The user's name.
+3. A stamp image (PNG).
 
 Generate a final ETHMumbai-style avatar that includes Mumbai + Thane elements, a denser artistic background, and a clean cartoon version of the user.
 
-CANVAS & SIZE:
+------------------------------------------------------
+CANVAS & SIZE
+------------------------------------------------------
 - Output must be a perfect square (1:1), around 1500 × 1500 px.
 - Center the character clearly.
 
-STEP 1 — PERSON EXTRACTION & CARTOON STYLE:
+------------------------------------------------------
+STEP 1 — PERSON EXTRACTION & CARTOON STYLE
+------------------------------------------------------
 Extract the person from the photo:
 - Remove background cleanly.
 - Preserve key physical features (face shape, hair, glasses, beard, clothing).
@@ -27,7 +32,9 @@ Extract the person from the photo:
   - Expression: simple friendly smile.
   - Make the avatar neat, clear, confident, and appealing.
 
-STEP 2 — ETHMUMBAI + THANE BACKDROP (DENSE & BEAUTIFUL):
+------------------------------------------------------
+STEP 2 — ETHMUMBAI + THANE BACKDROP (DENSE & BEAUTIFUL)
+------------------------------------------------------
 Use BEST Red (#E2231A) as the background.
 
 Add many bright white (#FFFFFF) line-art elements arranged in a dense, artistic, slightly messy but visually beautiful pattern.
@@ -59,12 +66,27 @@ BACKGROUND STYLE RULES:
 - Keep the entire background full, energetic, and culturally rich.
 - No gradients, no realistic textures, no shadows — purely line art.
 
-STEP 3 — USER NAME:
+------------------------------------------------------
+STEP 3 — USER NAME
+------------------------------------------------------
 - Add the user's name in white bold sans-serif text.
 - Place it in the bottom-left corner.
 - Keep it clean, minimal, and well-spaced.
 
-FINAL STYLE RULES:
+------------------------------------------------------
+STEP 4 — STAMP OVERLAY (IMPORTANT)
+------------------------------------------------------
+Use the provided stamp PNG EXACTLY as given.
+
+- Place it in the BOTTOM-RIGHT corner.
+- Rotate the stamp by ~20–30 degrees counter-clockwise.
+- Crop it so ~70–80% of the stamp is visible inside the frame.
+- Keep the stamp sharp and high contrast.
+- It should feel like a postal seal applied over the artwork.
+
+------------------------------------------------------
+FINAL STYLE RULES
+------------------------------------------------------
 - Cartoon avatar centered and clear.
 - Dense Mumbai + Thane background icons in bright white.
 - Prominent double-decker bus outline.
@@ -72,9 +94,106 @@ FINAL STYLE RULES:
 - A beautifully messy pattern: lively, energetic, vibrant.
 - Consistent ETHMumbai-style aesthetic.
 
-OUTPUT:
+------------------------------------------------------
+OUTPUT
+------------------------------------------------------
 - High-resolution square PNG.
-- Balanced composition of person, icons, and name.`;
+- Balanced composition of person, icons, name, and stamp.`;
+
+const PASSPORT_GENERATION_PROMPT = `You are given:
+1. A user photo.
+2. The user's name.
+3. A stamp image (PNG).
+
+Your task is to generate a complete ETHMumbai Passport page in the exact format shown below.
+
+------------------------------------------------------
+PASSPORT LAYOUT REQUIREMENTS
+------------------------------------------------------
+The final image must look like a realistic passport page with the following structure:
+
+LEFT SIDE (PHOTO SECTION):
+- Create a clean cartoon avatar of the person from the provided image.
+- Extract the person and convert them into a neat, professional cartoon style with:
+  - Smooth outlines
+  - Friendly smile
+  - Natural proportions (not anime)
+  - Simple soft shadows and minimal shading
+- Place the avatar inside a large vertical rectangular frame on the left side.
+- Use a light gray or cream background behind the avatar.
+- Add a faint drop shadow under the feet (optional but subtle).
+- Do NOT add Mumbai icons here.
+
+RIGHT SIDE (PASSPORT INFORMATION):
+Reproduce the exact passport layout:
+
+Title at top:
+- "PASSPORT"
+- "REPUBLIC OF ETHMUMBAI"
+
+Add these fields, aligned vertically with consistent spacing:
+
+Type: P  
+Code: ETH  
+Passport No.: E12345678  
+
+Surname: {USER NAME}  
+Given Names: {USER NAME}  
+Nationality: ETHMUMBAI  
+
+Date of Birth: 01 JAN 2000  
+Sex: M  
+Place of Birth: MUMBAI  
+
+Date of Issue: 01 JAN 2024  
+Date of Expiry: 01 JAN 2034  
+
+Typography rules:
+- Titles in uppercase bold black.
+- Other fields in clean passport-style sans-serif font.
+- Perfect alignment and spacing like an actual passport.
+
+BACKGROUND:
+- Use an off-white / light cream passport background.
+- Add faint guilloché lines or micro-pattern texture similar to real passports.
+- Keep it subtle and professional.
+
+------------------------------------------------------
+BOTTOM SECTION (MRZ ZONE)
+------------------------------------------------------
+Add a machine-readable zone with two lines in pure black monospace font:
+
+Line 1:
+{USER NAME}<<{USER NAME}<<<<<<<<<<<<<<<<<
+
+Line 2:
+01234567801JANJ002024<<<<<<<<2034
+
+Format spacing exactly like real passports.
+
+------------------------------------------------------
+STAMP PLACEMENT
+------------------------------------------------------
+Use the provided red ETHMumbai stamp image exactly as given:
+
+- Place it overlapping the bottom center of the passport.
+- Tilt the stamp by ~20–30 degrees counter-clockwise.
+- Keep the stamp at partial opacity so it appears like real ink.
+- Do NOT fully cover the text—place it naturally like a verification seal.
+
+------------------------------------------------------
+STYLE RULES
+------------------------------------------------------
+- Everything must look clean, official, and realistic.
+- Use accurate passport spacing and typography.
+- Avatar must look professional and consistent.
+- No distracting elements or extra graphics.
+
+------------------------------------------------------
+OUTPUT
+------------------------------------------------------
+- Full passport page as a single high-resolution image.
+- All text, MRZ lines, avatar, layout, and stamp must match the example format.`;
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -82,7 +201,7 @@ serve(async (req) => {
   }
 
   try {
-    const { name, photo } = await req.json();
+    const { name, photo, type = "avatar", stamp } = await req.json();
 
     if (!name || !photo) {
       return new Response(
@@ -96,7 +215,57 @@ serve(async (req) => {
       throw new Error("LOVABLE_API_KEY is not configured");
     }
 
-    console.log("Generating avatar for:", name);
+    console.log("===========================================");
+    console.log("🔔 GENERATION REQUEST RECEIVED");
+    console.log("📋 Type requested:", type);
+    console.log("👤 Name:", name);
+    console.log("🖼️ Stamp provided:", !!stamp);
+    console.log("===========================================");
+
+    // Select the appropriate prompt based on type
+    const prompt = type === "passport" ? PASSPORT_GENERATION_PROMPT : AVATAR_GENERATION_PROMPT;
+
+    if (type === "passport") {
+      console.log("✅ SELECTED: PASSPORT GENERATION");
+      console.log("📄 Expected: HORIZONTAL RECTANGLE (2000x1400)");
+      console.log("📄 Expected: CREAM background with text fields");
+    } else {
+      console.log("✅ SELECTED: AVATAR GENERATION");
+      console.log("🟥 Expected: SQUARE (1500x1500)");
+      console.log("🟥 Expected: RED background with white icons");
+    }
+    console.log("📝 Prompt first 150 chars:", prompt.substring(0, 150).replace(/\n/g, " "));
+
+    // Build content array with text, photo, and stamp
+    // Add explicit type instructions at the beginning and end
+    const typeInstruction = type === "passport"
+      ? "\n\n🚨 CRITICAL: You MUST create a HORIZONTAL PASSPORT DOCUMENT, NOT a square poster! 🚨\n"
+      : "\n\n🚨 CRITICAL: You MUST create a SQUARE RED POSTER (1:1), NOT a horizontal document! 🚨\n";
+
+    const content = [
+      {
+        type: "text",
+        text: `${typeInstruction}${prompt}\n\nUser's name: ${name}\n\n${typeInstruction}`,
+      },
+      {
+        type: "image_url",
+        image_url: {
+          url: photo,
+        },
+      },
+    ];
+
+    // Add stamp if available
+    if (stamp) {
+      content.push({
+        type: "image_url",
+        image_url: {
+          url: stamp,
+        },
+      });
+    } else {
+      console.warn("No stamp image provided");
+    }
 
     // Call Lovable AI Gateway with Gemini image generation model
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
@@ -109,22 +278,18 @@ serve(async (req) => {
         model: "google/gemini-3-pro-image-preview",
         messages: [
           {
+            role: "system",
+            content: type === "passport"
+              ? "You are a professional passport document generator. Create realistic passport pages with proper layout, typography, and official formatting. Include the user's cartoon avatar, all passport fields, MRZ zone, and stamp overlay as specified."
+              : "You are an artistic poster designer specializing in cultural avatars. Create vibrant square posters with red backgrounds, white line-art Mumbai/Thane landmarks, cartoon avatars, user names, and stamp overlays in the ETHMumbai style."
+          },
+          {
             role: "user",
-            content: [
-              {
-                type: "text",
-                text: `${AVATAR_GENERATION_PROMPT}\n\nThe user's name is: ${name}`,
-              },
-              {
-                type: "image_url",
-                image_url: {
-                  url: photo,
-                },
-              },
-            ],
+            content,
           },
         ],
         modalities: ["image", "text"],
+        temperature: 0.3, // Lower temperature for more consistent, instruction-following output
       }),
     });
 
@@ -166,7 +331,7 @@ serve(async (req) => {
     const base64Data = generatedImage.replace(/^data:image\/\w+;base64,/, "");
     const imageBytes = Uint8Array.from(atob(base64Data), (c) => c.charCodeAt(0));
 
-    const fileName = `avatar-${Date.now()}-${name.toLowerCase().replace(/\s+/g, "-")}.png`;
+    const fileName = `${type}-${Date.now()}-${name.toLowerCase().replace(/\s+/g, "-")}.png`;
 
     const { error: uploadError } = await supabase.storage
       .from("avatars")
