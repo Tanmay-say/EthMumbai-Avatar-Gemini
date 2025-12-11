@@ -59,6 +59,12 @@ export const TicketMachine = ({ onGenerated }: TicketMachineProps) => {
 
     setIsLoading(true);
 
+    console.log("===========================================");
+    console.log("FRONTEND: Starting generation");
+    console.log("Selected Type:", selectedType);
+    console.log("Name:", name.trim());
+    console.log("===========================================");
+
     try {
       // Convert photo to base64
       const reader = new FileReader();
@@ -68,9 +74,34 @@ export const TicketMachine = ({ onGenerated }: TicketMachineProps) => {
       });
       const photoBase64 = await base64Promise;
 
+      // Load stamp image
+      let stampBase64 = "";
+      try {
+        const stampResponse = await fetch("/images/eth-stamp.png");
+        if (stampResponse.ok) {
+          const stampBlob = await stampResponse.blob();
+          const stampReader = new FileReader();
+          const stampPromise = new Promise<string>((resolve) => {
+            stampReader.onloadend = () => resolve(stampReader.result as string);
+            stampReader.readAsDataURL(stampBlob);
+          });
+          stampBase64 = await stampPromise;
+          console.log("✓ Stamp loaded successfully");
+        }
+      } catch (error) {
+        console.warn("Could not load stamp image:", error);
+      }
+
+      console.log("Sending to edge function with type:", selectedType);
+
       // Call edge function to generate avatar
       const { data, error } = await supabase.functions.invoke("generate-avatar", {
-        body: { name: name.trim(), photo: photoBase64 },
+        body: { 
+          name: name.trim(), 
+          photo: photoBase64, 
+          type: selectedType,
+          stamp: stampBase64 
+        },
       });
 
       if (error) {
@@ -79,10 +110,12 @@ export const TicketMachine = ({ onGenerated }: TicketMachineProps) => {
 
       if (data?.imageUrl) {
         onGenerated(data.imageUrl, name.trim());
+        const typeLabel = selectedType === "passport" ? "Passport" : "Avatar";
         toast({
-          title: "Avatar Generated!",
-          description: "Your ETHMumbai avatar is ready",
+          title: `${typeLabel} Generated!`,
+          description: `Your ETHMumbai ${typeLabel.toLowerCase()} is ready`,
         });
+        console.log(`✓ ${typeLabel} generated successfully:`, data.imageUrl);
       } else {
         throw new Error("No image URL received");
       }
